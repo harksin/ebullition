@@ -4,48 +4,43 @@ import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
+  const [benchResult, setBenchResult] = useState([0]);
   const [name, setName] = useState("");
+  const [desciption, setDescription] = useState("");
+  const [url, setUrl] = useState("");
+  const [duration_in_seconds, setDurationInSeconds] = useState(0);
 
-  async function greet() {
+  async function runBench() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
+    setBenchResult(await invoke('run_http_bench', { name:name,desciption:desciption,url:url,duration:duration_in_seconds }));
   }
 
   return (
     <div className="container">
-      <h1>Welcome to Tauri!</h1>
+      <h1>Welcome Ebullition</h1>
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p>Create your first naive bench</p>
 
       <div className="row">
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            greet();
+            runBench();
           }}
         >
           <input
-            id="greet-input"
+            id="bench-name"
             onChange={(e) => setName(e.currentTarget.value)}
             placeholder="Enter a name..."
           />
-          <button type="submit">Greet</button>
+          <input id="bench-description" onChange={(e) => setDescription(e.currentTarget.value)} placeholder="Enter a description..." />
+          <input id="bench-url" onChange={(e) => setUrl(e.currentTarget.value)} placeholder="Enter a url..." />
+          <input id="bench-duration" onChange={(e) => setDurationInSeconds(Number(e.currentTarget.value))} placeholder="Enter a duration in seconds..." />
+
+          <button type="submit">Run the bench</button>
         </form>
       </div>
-      <p>{greetMsg}</p>
+      <p>{benchResult}</p>
     </div>
   );
 }
